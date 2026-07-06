@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { sendCartData } from "./cart-actions";
 
 const cartSlice = createSlice({
   name: "cart",
@@ -13,7 +14,6 @@ const cartSlice = createSlice({
       state.totalQuantity = action.payload.totalQuantity;
     },
     addItem(state, action) {
-      
       const newItem = action.payload;
       const existingItem = state.items.find((item) => item.id === newItem.id);
       state.totalQuantity++;
@@ -30,7 +30,6 @@ const cartSlice = createSlice({
         existingItem.quantity++;
         existingItem.totalPrice = existingItem.totalPrice + newItem.price;
       }
-      
     },
     removeItem(state, action) {
       const id = action.payload;
@@ -45,9 +44,16 @@ const cartSlice = createSlice({
       }
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(sendCartData.fulfilled, (state, action) => {
+        console.log("Cart data sent", action.payload);
+      })
+      .addCase(sendCartData.rejected, (state, action) => {
+        console.log("Error sending cart", action.payload);
+      });
+  },
 });
-
-
 
 export const cartActions = cartSlice.actions;
 
